@@ -6,12 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1515</width>
-    <height>942</height>
+    <width>1411</width>
+    <height>911</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>1</horstretch>
+    <verstretch>1</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>100</width>
+    <height>100</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Self Driving Car System</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="groupBox">
@@ -20,7 +32,7 @@
       <x>10</x>
       <y>10</y>
       <width>371</width>
-      <height>661</height>
+      <height>541</height>
      </rect>
     </property>
     <property name="title">
@@ -31,7 +43,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>331</width>
+       <width>361</width>
        <height>521</height>
       </rect>
      </property>
@@ -62,8 +74,8 @@
        <rect>
         <x>150</x>
         <y>30</y>
-        <width>141</width>
-        <height>22</height>
+        <width>201</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
@@ -112,14 +124,14 @@
        <rect>
         <x>150</x>
         <y>70</y>
-        <width>141</width>
+        <width>201</width>
         <height>20</height>
        </rect>
       </property>
       <property name="font">
        <font>
         <family>Times New Roman</family>
-        <pointsize>6</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
      </widget>
@@ -147,7 +159,7 @@
        <rect>
         <x>150</x>
         <y>240</y>
-        <width>151</width>
+        <width>201</width>
         <height>16</height>
        </rect>
       </property>
@@ -165,9 +177,9 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>210</y>
+        <y>212</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -198,7 +210,7 @@
        <rect>
         <x>150</x>
         <y>190</y>
-        <width>161</width>
+        <width>201</width>
         <height>16</height>
        </rect>
       </property>
@@ -216,9 +228,9 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>260</y>
+        <y>262</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -229,9 +241,9 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>260</y>
+        <y>262</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -242,9 +254,9 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>110</y>
-        <width>141</width>
-        <height>22</height>
+        <y>101</y>
+        <width>201</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
@@ -297,9 +309,9 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>150</y>
-        <width>141</width>
-        <height>22</height>
+        <y>141</y>
+        <width>201</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
@@ -385,9 +397,9 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>310</y>
+        <y>312</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -398,9 +410,9 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>310</y>
+        <y>312</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -440,9 +452,9 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>350</y>
+        <y>352</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -453,9 +465,9 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>380</y>
+        <y>382</y>
         <width>75</width>
-        <height>23</height>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
@@ -465,14 +477,19 @@
      <widget class="QCommandLinkButton" name="btn_init_sdc">
       <property name="geometry">
        <rect>
-        <x>70</x>
+        <x>110</x>
         <y>470</y>
-        <width>185</width>
+        <width>161</width>
         <height>41</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>Initialise SDC + DAS</string>
+       <string>INITIALISE SDC</string>
       </property>
      </widget>
     </widget>
@@ -482,9 +499,15 @@
      <rect>
       <x>400</x>
       <y>10</y>
-      <width>1011</width>
-      <height>841</height>
+      <width>971</width>
+      <height>821</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>3</horstretch>
+      <verstretch>3</verstretch>
+     </sizepolicy>
     </property>
     <property name="title">
      <string>SDC + DAS Work Area</string>
@@ -492,9 +515,9 @@
     <widget class="QLabel" name="label_36">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>380</x>
        <y>30</y>
-       <width>681</width>
+       <width>271</width>
        <height>41</height>
       </rect>
      </property>
@@ -545,7 +568,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Self Driving Car Plus Driving Assistance System</string>
+      <string>Self Driving Car System</string>
      </property>
     </widget>
     <widget class="QCommandLinkButton" name="btn_stop_sdc_system">
@@ -553,21 +576,26 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>185</width>
+       <width>121</width>
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Stop SDC + DAS</string>
+      <string>STOP SDC</string>
      </property>
     </widget>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>0</x>
        <y>80</y>
        <width>971</width>
-       <height>741</height>
+       <height>761</height>
       </rect>
      </property>
      <property name="title">
@@ -581,6 +609,12 @@
         <width>931</width>
         <height>151</height>
        </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="title">
        <string>SDC + DAS Features</string>
@@ -890,9 +924,9 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>170</y>
+        <y>180</y>
         <width>271</width>
-        <height>241</height>
+        <height>231</height>
        </rect>
       </property>
       <property name="palette">
@@ -1080,7 +1114,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>8</pointsize>
+         <pointsize>12</pointsize>
          <weight>50</weight>
          <bold>false</bold>
         </font>
@@ -1112,7 +1146,7 @@
       <widget class="QLabel" name="txt_traffic_sign">
        <property name="geometry">
         <rect>
-         <x>160</x>
+         <x>140</x>
          <y>160</y>
          <width>91</width>
          <height>21</height>
@@ -1120,7 +1154,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>8</pointsize>
+         <pointsize>12</pointsize>
          <weight>50</weight>
          <bold>false</bold>
         </font>
@@ -1152,7 +1186,7 @@
       <widget class="QLabel" name="txt_object_distance">
        <property name="geometry">
         <rect>
-         <x>160</x>
+         <x>140</x>
          <y>190</y>
          <width>91</width>
          <height>21</height>
@@ -1160,7 +1194,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>8</pointsize>
+         <pointsize>12</pointsize>
          <weight>50</weight>
          <bold>false</bold>
         </font>
@@ -4064,8 +4098,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1515</width>
-     <height>21</height>
+     <width>1411</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

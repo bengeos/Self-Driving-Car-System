@@ -6,6 +6,7 @@ import serial as sp
 import threading
 import time
 
+
 class SDC_Mode(object):
     def __init__(self,NetLayers,ip_camera_host,capture_image_size,serialport):
         self.MyNet = net.MLP(NetLayers)
@@ -74,6 +75,7 @@ class SDC_Mode(object):
             x = np.size(self.Frame)
             if(x >= self.Size[0]*self.Size[1]):
                 try:
+                    T1 = time.time()
                     self.Image = cv2.resize(self.Frame,self.Size)
                     ImageArray = self.Image.reshape(-1,self.MyNet.Network_Shape[0]).astype(np.float32)
                     _TrainingData = []
@@ -84,7 +86,9 @@ class SDC_Mode(object):
                     TestingResult = [np.reshape(x, (1, 1)) for x in _TestingData]
                     TestData = zip(TestingData,TestingResult)
                     res = self.MyNet.Evaluate_Data(TestData)
+                    T2 = time.time()
                     print 'Process Result: '+str(res[0])
+                    print 'Process Time: '+str(T2-T1)
                     self.Update_WheelState(res[0])
                     self.Drive_Serial(res[0])
                     cv2.imshow('IP Camera '+self.Host,self.Frame)

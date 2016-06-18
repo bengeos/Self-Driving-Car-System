@@ -56,6 +56,7 @@ class Window(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
+    app.setStyle('plastique')
     MainWindow = Window()
     MainWindow.show()
     sys.exit(app.exec_())

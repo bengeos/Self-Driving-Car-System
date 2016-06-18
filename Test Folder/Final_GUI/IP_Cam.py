@@ -69,7 +69,7 @@ class IP_Cam(object):
                         x = 0
                 k = cv2.waitKey(1) - 48
         print 'Taking Picture'
-        imgPath = str(self.Folder+'\\'+str(time.time())+'.jpg')
+        imgPath = str(self.Folder+'//'+str(time.time())+'.jpg')
         print imgPath
         size = np.shape(self.Image)
         print size
