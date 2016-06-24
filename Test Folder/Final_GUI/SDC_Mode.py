@@ -94,7 +94,7 @@ class SDC_Mode(object):
                     cv2.imshow('IP Camera '+self.Host,self.Frame)
                 finally:
                     pass
-            k = cv2.waitKey(1000)
+            k = cv2.waitKey(100)
             self.Update_WheelState(0)
             if(k == 27):
                 self.Update_WheelState(0)

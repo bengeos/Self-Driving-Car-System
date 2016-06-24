@@ -18,7 +18,7 @@ class Camera(threading.Thread):
     def run(self):
         bytes=''
         while(self.isRunning):
-            bytes+=self.Stream.read(512)
+            bytes+=self.Stream.read(2024)
             a = bytes.find('\xff\xd8')
             b = bytes.find('\xff\xd9')
             if a!=-1 and b!=-1:

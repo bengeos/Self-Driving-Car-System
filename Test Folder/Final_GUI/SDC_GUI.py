@@ -1516,7 +1516,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
 
         self._update_timer = QtCore.QTimer()
         self._update_timer.timeout.connect(self.checkProgress)
-        self._update_timer.start(1000)
+
     def FreeModeSpeed(self, value):
         pos = int(self.bar_free_mode_speed.value())
         self.SDCDriving.ChangeSpeed(str(pos))
@@ -1555,11 +1555,17 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.training_thread.start()
 
     def checkProgress(self):
-        if(self.Driving_Mode == 2):
-            self.txt_wheel_state.setText(self.SDCDriving.WheelState)
-        if (self.isTraining == True):
-            self.prg_mlp1_accuracy.setValue(self.MLP.MyNet.TrainningResult)
-            self.prg_mlp1_percent.setValue(self.MLP.MyNet.TrainningProgress)
+        try:
+            if(self.Driving_Mode == 2):
+                self.txt_wheel_state.setText(self.SDCDriving.WheelState)
+            if (self.isTraining == True):
+                self.prg_mlp1_accuracy.setValue(self.MLP.MyNet.TrainningResult)
+                self.prg_mlp1_percent.setValue(self.MLP.MyNet.TrainningProgress)
+        except:
+            exit()
+        finally:
+            pass
+
     def Stop_Training(self):
         self.MLP.StopLearning()
 
@@ -1670,9 +1676,8 @@ class Ui_MainWindow(QtGui.QMainWindow):
         else:
             return (50,50)
     def init_SDC(self):
-        self.groupBox.setEnabled(False)
-        self.group_workarea.setEnabled(True)
-        print self.cmb_camera_source.currentText()
+        self.condition = True
+        print 'Initializing SDC System .....'
         self.ImageSize = self.getImageSize(str(self.cmb_camera_size.currentText()))
         self.Camera.setImageSize(self.ImageSize)
         self.MLP_Net_Layer = []
@@ -1681,28 +1686,44 @@ class Ui_MainWindow(QtGui.QMainWindow):
             self.MLP_Net_Layer.append(int(self.lst_mlp_layers.item(x).text()))
         self.MLP_Net_Layer.append(10)
         self.Camera.Host = 'http://192.168.43.1:8080/video'
-
-        print str(self.Camera.Host)
         self.Camera = cam.IP_Cam(str(self.txte_camera_host.text()))
-        print 'initializing serial port:'
         self.Driving_Mode = -1
         self.grp_self_driving.setChecked(False)
         self.grp_training.setChecked(False)
         self.grp_free_mode.setChecked(False)
 
-        self.Camera.Folder = self.TrainigFolder
-        self.Camera.csvPath = self.TrainigCSVFile
-        print 'Image Size: '
-        print self.Camera.Size
-        print self.MLP_Net_Layer
+        try:
+            self.Camera.Folder = self.TrainigFolder
+            self.Camera.csvPath = self.TrainigCSVFile
+        except:
+            print '--> Training Folder is not Selected!'
+            self.condition = False
 
-        self.MLP = MLP.NeuralNetwork(self.MLP_Net_Layer,self.ImageSize)
-        self.Camera.Size = self.ImageSize
-        self.SDCDriving = DrivingMode.SDC_Mode(self.MLP_Net_Layer,self.Camera.Host,self.Camera.Size,str(self.cmb_serial_port.currentText()))
+        try:
+            self.MLP = MLP.NeuralNetwork(self.MLP_Net_Layer,self.ImageSize)
+            self.Camera.Size = self.ImageSize
+            self.SDCDriving = DrivingMode.SDC_Mode(self.MLP_Net_Layer,self.Camera.Host,self.Camera.Size,str(self.cmb_serial_port.currentText()))
+        except:
+            print '--> No Camera Source Found!'
+            self.condition = False
+
+        if(self.condition):
+            self.groupBox.setEnabled(False)
+            self.group_workarea.setEnabled(True)
+            self._update_timer.start(1000)
+            print 'SDC Initialized.'
+            print 'SDC Camera Host: '+str(self.Camera.Host)
+            print 'SDC Image Size: ' + str(self.ImageSize)
+            print 'SDC Neural Network: ' + str(self.MLP_Net_Layer)
+        else:
+            self._update_timer.stop()
+
 
     def stop_SDC(self):
+        self.Camera.Stop()
         self.groupBox.setEnabled(True)
         self.group_workarea.setEnabled(False)
+        self._update_timer.stop()
 
     def Start_In_Realtime(self):
         self.SDCDriving.Load_Trained_MLP(self.NeuronFilePath)

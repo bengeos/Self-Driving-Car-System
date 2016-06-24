@@ -8,8 +8,6 @@ def sigmoid_der(z):
     return sigmoid(z)*(1-sigmoid(z))
 class MLP(object):
     def __init__(self,Network_Shape):
-        print 'Network Shape:'
-        print Network_Shape
         self.Layer_Len = len(Network_Shape)
         self.Network_Shape = Network_Shape
         self.Biases = self.init_Biases()
@@ -48,8 +46,9 @@ class MLP(object):
                 for z in y:
                     ET.SubElement(Neurone,"Weight").text = str(z)
         tree = ET.ElementTree(Network)
-        print 'Save file to: '+str(path)
+        print 'Saving File to: '+str(path)
         tree.write(path,"UTF-8")
+        print 'File Saved to: ' + str(path)
     def Load_From(self,path):
         doc = ET.parse(path)
         Nets = []
@@ -62,8 +61,6 @@ class MLP(object):
                 Neur.append(Param)
             Nets.append(np.array(Neur))
         self.Weights = Nets
-        print "Weight shape"
-        print np.shape(self.Weights)
 
     def ReadXML(self):
         doc = ET.parse("MLP_WEIGHT.xml")
