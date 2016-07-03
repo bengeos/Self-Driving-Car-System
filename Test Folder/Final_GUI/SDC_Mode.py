@@ -1,5 +1,5 @@
 import MLP as net
-import IP_Camera as cam
+import Camera as cam
 import cv2
 import numpy as np
 import serial as sp
@@ -8,20 +8,24 @@ import time
 
 
 class SDC_Mode(object):
-    def __init__(self,NetLayers,ip_camera_host,capture_image_size,serialport):
+    def __init__(self,NetLayers,ip_camera_host,camera_type,capture_image_size,serialport):
         self.MyNet = net.MLP(NetLayers)
         self.Port = serialport
         self.SerialPort = sp.Serial(self.Port)
-        self.Camera = cam.Camera(ip_camera_host)
+        print 'Initialisig SDC Mode'
+        self.Camera = cam.Camera(camera_type,ip_camera_host)
         self.Host = ip_camera_host
         self.Frame = None
         self.Image = None
         self.Size = capture_image_size
         self.Speed = 1
+        self.isStoped = True
         self.SerialThread = threading.Thread(target=self.ReadWriteSerial,args=())
         self.SerialWrite = None
         self.SerialRead = None
         self.WheelState = "Stopped"
+        self.Frame_Rate = 100;
+    def Start_Serial_Port(self):
         self.SerialThread.start()
     def Update_WheelState(self,val):
         if(val == 0):
@@ -41,10 +45,15 @@ class SDC_Mode(object):
         self.SerialPort.write(new_speed)
     def ReadWriteSerial(self):
         prev = ''
-        while(self.SerialPort.isOpen()):
-            self.SerialRead = self.SerialPort.readline()
-            print self.SerialRead
-            time.sleep(0.01)
+        while(self.SerialPort.isOpen() and not self.isStoped):
+            try:
+                self.SerialRead = self.SerialPort.readline()
+                print self.SerialRead
+                time.sleep(0.01)
+            except:
+                pass
+            finally:
+                pass
 
     def Send_Serial(self,data):
         print 'Sending Serial Data: '+str(data)
@@ -68,7 +77,8 @@ class SDC_Mode(object):
         else:
             self.Send_Serial('S')
     def Start_Driving(self):
-        self.Camera.start()
+        if (not self.Camera.isAlive()):
+            self.Camera.start()
         self.isRunning = True
         while(self.isRunning):
             self.Frame = self.Camera.get_image()
@@ -77,6 +87,7 @@ class SDC_Mode(object):
                 try:
                     T1 = time.time()
                     self.Image = cv2.resize(self.Frame,self.Size)
+                    print 'Image Size: '+str(np.shape(self.Image))
                     ImageArray = self.Image.reshape(-1,self.MyNet.Network_Shape[0]).astype(np.float32)
                     _TrainingData = []
                     _TestingData = []
@@ -94,7 +105,7 @@ class SDC_Mode(object):
                     cv2.imshow('IP Camera '+self.Host,self.Frame)
                 finally:
                     pass
-            k = cv2.waitKey(100)
+            k = cv2.waitKey(self.Frame_Rate)
             self.Update_WheelState(0)
             if(k == 27):
                 self.Update_WheelState(0)

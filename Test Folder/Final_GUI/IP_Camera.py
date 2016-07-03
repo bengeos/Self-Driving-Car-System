@@ -24,7 +24,11 @@ class Camera(threading.Thread):
             if a!=-1 and b!=-1:
                 jpg = bytes[a:b+2]
                 bytes= bytes[b+2:]
-                self.Image = cv.imdecode(np.fromstring(jpg, dtype=np.uint8),cv.CV_LOAD_IMAGE_GRAYSCALE)
+                image = cv.imdecode(np.fromstring(jpg, dtype=np.uint8),cv.CV_LOAD_IMAGE_GRAYSCALE)
+                (h,w) = np.shape(image)[:2]
+                center = (w/2,h/2)
+                M = cv.getRotationMatrix2D(center,90,1.0)
+                self.Image = cv.warpAffine(image,M,(w,h))
     def get_image(self):
         return self.Image
     def Stop(self):

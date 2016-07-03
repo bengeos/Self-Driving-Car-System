@@ -1237,10 +1237,10 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.grp_selfdriving.setObjectName(_fromUtf8("grp_selfdriving"))
         self.bar_self_driving_speed = QtGui.QSlider(self.grp_selfdriving)
         self.bar_self_driving_speed.setGeometry(QtCore.QRect(90, 20, 151, 22))
-        self.bar_self_driving_speed.setMinimum(1)
-        self.bar_self_driving_speed.setMaximum(6)
+        self.bar_self_driving_speed.setMinimum(0)
+        self.bar_self_driving_speed.setMaximum(9)
         self.bar_self_driving_speed.setSingleStep(1)
-        self.bar_self_driving_speed.setProperty("value", 2)
+        self.bar_self_driving_speed.setProperty("value", 3)
         self.bar_self_driving_speed.setOrientation(QtCore.Qt.Horizontal)
         self.bar_self_driving_speed.setObjectName(_fromUtf8("bar_self_driving_speed"))
         self.label_35 = QtGui.QLabel(self.grp_selfdriving)
@@ -1252,8 +1252,8 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.bar_self_driving_frame = QtGui.QSlider(self.grp_selfdriving)
         self.bar_self_driving_frame.setGeometry(QtCore.QRect(90, 50, 151, 22))
         self.bar_self_driving_frame.setMinimum(1)
-        self.bar_self_driving_frame.setMaximum(100)
-        self.bar_self_driving_frame.setProperty("value", 78)
+        self.bar_self_driving_frame.setMaximum(500)
+        self.bar_self_driving_frame.setProperty("value", 50)
         self.bar_self_driving_frame.setOrientation(QtCore.Qt.Horizontal)
         self.bar_self_driving_frame.setObjectName(_fromUtf8("bar_self_driving_frame"))
         self.label_37 = QtGui.QLabel(self.grp_selfdriving)
@@ -1474,7 +1474,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.init_with_gui()
 
     def init_with_gui(self):
-        self.Camera = cam.IP_Cam("")
+        self.Camera = cam.IP_Cam("0",0)
         self.MLP_Net_Layer = [2500]
         self.ImageSize = (50,50)
         self.MLP = MLP.NeuralNetwork(self.MLP_Net_Layer,self.ImageSize)
@@ -1504,6 +1504,9 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.centralwidget.connect(self.dial_mlp1_epsilon, QtCore.SIGNAL('valueChanged(int)'),self.change_Epsilon_Value)
         self.centralwidget.connect(self.bar_free_mode_speed, QtCore.SIGNAL('valueChanged(int)'),self.FreeModeSpeed)
         self.centralwidget.connect(self.bar_self_driving_speed, QtCore.SIGNAL('valueChanged(int)'),self.SelfDrivingSpeed)
+        self.centralwidget.connect(self.bar_self_driving_frame, QtCore.SIGNAL('valueChanged(int)'),self.Self_Driving_Frame_Rate)
+
+        self.btn_self_driving_stop.clicked.connect(self.Stop_Self_Driving_State)
 
         self.cbx_visualize_camera.stateChanged.connect(self.Visualise_Camera_State)
         self.btn_free_mode_start.clicked.connect(self.StartFreeMode)
@@ -1516,6 +1519,15 @@ class Ui_MainWindow(QtGui.QMainWindow):
 
         self._update_timer = QtCore.QTimer()
         self._update_timer.timeout.connect(self.checkProgress)
+
+    def Stop_Self_Driving_State(self):
+        print 'Self Driving Stopped'
+        self.SDCDriving.isRunning = False
+        pass
+    def Self_Driving_Frame_Rate(self, value):
+        print 'Self Driving Frame Rate: '+str(value)
+        self.SDCDriving.Frame_Rate = int(value)
+        pass
 
     def FreeModeSpeed(self, value):
         pos = int(self.bar_free_mode_speed.value())
@@ -1562,7 +1574,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
                 self.prg_mlp1_accuracy.setValue(self.MLP.MyNet.TrainningResult)
                 self.prg_mlp1_percent.setValue(self.MLP.MyNet.TrainningProgress)
         except:
-            exit()
+            pass
         finally:
             pass
 
@@ -1593,7 +1605,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.grp_free_mode.setChecked(False)
         self.Driving_Mode = 2;
     def init_camera(self,host):
-        self.Camera = cam.IP_Cam(host)
+        self.Camera = cam.IP_Cam(host,0)
         self.Camera.Stop()
 
     def keyPressEvent(self, event):
@@ -1686,12 +1698,26 @@ class Ui_MainWindow(QtGui.QMainWindow):
             self.MLP_Net_Layer.append(int(self.lst_mlp_layers.item(x).text()))
         self.MLP_Net_Layer.append(10)
         self.Camera.Host = 'http://192.168.43.1:8080/video'
-        self.Camera = cam.IP_Cam(str(self.txte_camera_host.text()))
+        print 'Camera Type: '+str(self.cmb_camera_source.currentText())
+        if(str(self.cmb_camera_source.currentText()) == 'WebCam'):
+            self.CameraType = int(self.txte_camera_host.text())
+        elif(str(self.cmb_camera_source.currentText()) == 'USB Camera'):
+            self.CameraType = int(self.txte_camera_host.text())
+        else:
+            self.CameraType = self.Camera.Host
+        print 'bbbbb'
+        print str((self.CameraType))
+
+
+        self.Camera = cam.IP_Cam(str(self.txte_camera_host.text()),self.CameraType)
         self.Driving_Mode = -1
         self.grp_self_driving.setChecked(False)
         self.grp_training.setChecked(False)
         self.grp_free_mode.setChecked(False)
 
+
+
+        print self.Camera
         try:
             self.Camera.Folder = self.TrainigFolder
             self.Camera.csvPath = self.TrainigCSVFile
@@ -1702,9 +1728,11 @@ class Ui_MainWindow(QtGui.QMainWindow):
         try:
             self.MLP = MLP.NeuralNetwork(self.MLP_Net_Layer,self.ImageSize)
             self.Camera.Size = self.ImageSize
-            self.SDCDriving = DrivingMode.SDC_Mode(self.MLP_Net_Layer,self.Camera.Host,self.Camera.Size,str(self.cmb_serial_port.currentText()))
+            self.SDCDriving = DrivingMode.SDC_Mode(self.MLP_Net_Layer,self.Camera.Host,self.CameraType,self.Camera.Size,str(self.cmb_serial_port.currentText()))
+            self.SDCDriving.isStoped = False
+            self.SDCDriving.Start_Serial_Port()
         except:
-            print '--> No Camera Source Found!'
+            print '--> No Camera Source Found!'+str((self.CameraType))
             self.condition = False
 
         if(self.condition):
@@ -1724,6 +1752,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
         self.groupBox.setEnabled(True)
         self.group_workarea.setEnabled(False)
         self._update_timer.stop()
+        self.SDCDriving.isStoped = True
 
     def Start_In_Realtime(self):
         self.SDCDriving.Load_Trained_MLP(self.NeuronFilePath)
